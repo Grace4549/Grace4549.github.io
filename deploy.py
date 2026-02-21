@@ -2,8 +2,8 @@ import boto3
 import os
 
 # Get AWS credentials from environment variables (Jenkins will pass these)
-aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
-aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
+aws_access_key_id = os.environ['aws_access_key_id']
+aws_secret_access_key = os.environ['aws_secret_access_key']
 
 # Replace with your actual S3 bucket name
 bucket_name = 'grace-professional-portfolio-2026'
