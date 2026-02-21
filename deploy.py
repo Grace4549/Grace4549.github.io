@@ -1,30 +1,28 @@
 import boto3
 import os
 
-# Get AWS credentials from environment variables (Jenkins will pass these)
-aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
-aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
-
-# Replace with your actual S3 bucket name
-bucket_name = 'grace-professional-portfolio-2026'
-
-# Local folder to upload (repo root)
-local_folder = "."
+# ====== CONFIGURATION ======
+bucket_name = 'my-professional-portfolio-2026'  # your S3 bucket name
+region_name = 'us-east-1'  # replace if your bucket is in a different region
+folder = '.'  # start from current directory (repo root)
+# ============================
 
 # Connect to S3
-s3 = boto3.client(
-    "s3",
-    aws_access_key_id=aws_access_key_id,
-    aws_secret_access_key=aws_secret_access_key
-)
+s3 = boto3.client('s3', region_name=region_name)
 
-# Upload files
-for root, dirs, files in os.walk(local_folder):
+# Walk through all files in the folder recursively
+for root, dirs, files in os.walk(folder):
     for file in files:
-        if file.endswith(('.html', '.css')):  # Only upload HTML & CSS
-            local_path = os.path.join(root, file)
-            s3_path = os.path.relpath(local_path, local_folder)
-            print(f"Uploading {local_path} to s3://{bucket_name}/{s3_path}")
-            s3.upload_file(local_path, bucket_name, s3_path, ExtraArgs={'ACL':'public-read'})
-
-print("Deployment to S3 completed successfully!")
+        # Skip this script itself
+        if file == 'deploy.py':
+            continue
+        
+        local_path = os.path.join(root, file)
+        # Compute the relative path to preserve folder structure in S3
+        s3_path = os.path.relpath(local_path, folder)
+        
+        try:
+            s3.upload_file(local_path, bucket_name, s3_path, ExtraArgs={'ACL': 'public-read'})
+            print(f'✅ Uploaded {s3_path} to S3')
+        except Exception as e:
+            print(f'❌ Failed to upload {s3_path}: {e}')
