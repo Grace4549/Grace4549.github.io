@@ -2,7 +2,7 @@ import boto3
 import os
 
 # ====== CONFIGURATION ======
-bucket_name = 'my-professional-portfolio-2026'  # your S3 bucket name
+bucket_name = 'gr-web-html'  # your S3 bucket name
 region_name = 'us-east-1'  # replace if your bucket is in a different region
 folder = '.'  # start from current directory (repo root)
 # ============================
